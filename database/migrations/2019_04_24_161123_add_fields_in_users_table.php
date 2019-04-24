@@ -21,9 +21,9 @@ class AddFieldsInUsersTable extends Migration
             $table->string('username')->unique()->after('email');
             $table->string('first_name')->after('username');
             $table->string('last_name')->after('first_name');
-            $table->string('address')->after('last_name');
-            $table->string('postcode')->after('address');
-            $table->string('contact_phone_number')->unique()->after('postcode');
+            $table->string('address')->nullable()->default(null)->after('last_name');
+            $table->string('postcode')->nullable()->default(null)->after('address');
+            $table->string('contact_phone_number')->unique()->nullable()->default(null)->after('postcode');
         });
     }
 

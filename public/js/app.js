@@ -2108,10 +2108,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      users: []
+      users: [],
+      user_ids: [],
+      checked_all: false
     };
   },
   mounted: function mounted() {
@@ -2126,12 +2140,22 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     deleteEntry: function deleteEntry(id, index) {
       if (confirm("Are you sure to delete")) {
-        var app = this;
         axios["delete"]('/api/users/' + id).then(function (resp) {
-          app.users.splice(index, 1);
+          this.users.splice(index, 1);
         })["catch"](function (resp) {
           alert("Could not delete user");
         });
+      }
+    },
+    checkAll: function checkAll() {
+      this.checked_all = !this.checked_all;
+
+      if (this.checked_all) {
+        this.users.forEach(function (user) {
+          this.user_ids.push(user.id);
+        }.bind(this));
+      } else {
+        this.user_ids = [];
       }
     }
   }
@@ -38331,13 +38355,119 @@ var render = function() {
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "card-body table-responsive" }, [
-      _c("table", { staticClass: "table" }, [
-        _vm._m(0),
+      _c("p", [_vm._v("\n            " + _vm._s(_vm.user_ids) + "\n        ")]),
+      _vm._v(" "),
+      _c("p", [
+        _vm._v(
+          "\n            checked_all: " + _vm._s(_vm.checked_all) + "\n        "
+        )
+      ]),
+      _vm._v(" "),
+      _c("table", { staticClass: "table table-bordered table-hover" }, [
+        _c("thead", [
+          _c("tr", [
+            _c("th", [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.checked_all,
+                    expression: "checked_all"
+                  }
+                ],
+                attrs: { type: "checkbox", value: "false" },
+                domProps: {
+                  checked: Array.isArray(_vm.checked_all)
+                    ? _vm._i(_vm.checked_all, "false") > -1
+                    : _vm.checked_all
+                },
+                on: {
+                  click: _vm.checkAll,
+                  change: function($event) {
+                    var $$a = _vm.checked_all,
+                      $$el = $event.target,
+                      $$c = $$el.checked ? true : false
+                    if (Array.isArray($$a)) {
+                      var $$v = "false",
+                        $$i = _vm._i($$a, $$v)
+                      if ($$el.checked) {
+                        $$i < 0 && (_vm.checked_all = $$a.concat([$$v]))
+                      } else {
+                        $$i > -1 &&
+                          (_vm.checked_all = $$a
+                            .slice(0, $$i)
+                            .concat($$a.slice($$i + 1)))
+                      }
+                    } else {
+                      _vm.checked_all = $$c
+                    }
+                  }
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c("th", [_vm._v("Username")]),
+            _vm._v(" "),
+            _c("th", [_vm._v("Email")]),
+            _vm._v(" "),
+            _c("th", [_vm._v("Full Name")]),
+            _vm._v(" "),
+            _c("th", [_vm._v("Full Address")]),
+            _vm._v(" "),
+            _c("th", [_vm._v("Phone")]),
+            _vm._v(" "),
+            _c("th", [_vm._v("Date Registered")]),
+            _vm._v(" "),
+            _c("th")
+          ])
+        ]),
         _vm._v(" "),
         _c(
           "tbody",
           _vm._l(_vm.users, function(user, index) {
             return _c("tr", [
+              _c("td", [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user_ids,
+                      expression: "user_ids"
+                    }
+                  ],
+                  attrs: { type: "checkbox" },
+                  domProps: {
+                    value: user.id,
+                    checked: Array.isArray(_vm.user_ids)
+                      ? _vm._i(_vm.user_ids, user.id) > -1
+                      : _vm.user_ids
+                  },
+                  on: {
+                    change: function($event) {
+                      var $$a = _vm.user_ids,
+                        $$el = $event.target,
+                        $$c = $$el.checked ? true : false
+                      if (Array.isArray($$a)) {
+                        var $$v = user.id,
+                          $$i = _vm._i($$a, $$v)
+                        if ($$el.checked) {
+                          $$i < 0 && (_vm.user_ids = $$a.concat([$$v]))
+                        } else {
+                          $$i > -1 &&
+                            (_vm.user_ids = $$a
+                              .slice(0, $$i)
+                              .concat($$a.slice($$i + 1)))
+                        }
+                      } else {
+                        _vm.user_ids = $$c
+                      }
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
               _c("td", [_vm._v(_vm._s(user.username))]),
               _vm._v(" "),
               _c("td", [_vm._v(_vm._s(user.email))]),
@@ -38398,30 +38528,7 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("Username")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Email")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Full Name")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Full Address")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Phone")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Date Registered")]),
-        _vm._v(" "),
-        _c("th")
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

@@ -14,7 +14,13 @@
                         </div>
                     @endif
 
-                    You are logged in!
+                    <p>
+                        This is a basic CRUD/CMS app written in <a href="https://laravel.com" target="_blank">Laravel</a> and <a href="https://vuejs.org" target="_blank">Vue</a> by <a href="http://doncadavona.com" target="_blank">Don Cadavona</a>.
+                    </p>
+                    <p>
+                        <a href="{{ route('users.index') }}" class="btn btn-primary">Manage Users</a>
+                    </p>
+
                 </div>
             </div>
         </div>

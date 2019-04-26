@@ -7,9 +7,18 @@
             </div>
         </h5>
         <div class="card-body table-responsive">
-            <table class="table">
+            <p>
+                {{ user_ids }}
+            </p>
+            <p>
+                checked_all: {{ checked_all }}
+            </p>
+            <table class="table table-bordered table-hover">
                 <thead>
                     <tr>
+                        <th>
+                            <input type="checkbox" value="false" @click="checkAll" v-model="checked_all">
+                        </th>
                         <th>Username</th>
                         <th>Email</th>
                         <th>Full Name</th>
@@ -21,6 +30,9 @@
                 </thead>
                 <tbody>
                     <tr v-for="user, index in users">
+                        <td>
+                            <input type="checkbox" :value="user.id" v-model="user_ids">
+                        </td>
                         <td>{{ user.username }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.last_name + ', ' + user.first_name }}</td>
@@ -46,7 +58,9 @@
     export default {
         data: function () {
             return {
-                users: []
+                users: [],
+                user_ids: [],
+                checked_all: false,
             }
         },
         mounted() {
@@ -63,14 +77,25 @@
         methods: {
             deleteEntry(id, index) {
                 if (confirm("Are you sure to delete")) {
-                    var app = this;
                     axios.delete('/api/users/' + id)
                         .then(function (resp) {
-                            app.users.splice(index, 1);
+                            this.users.splice(index, 1);
                         })
                         .catch(function (resp) {
                             alert("Could not delete user");
                         });
+                }
+            },
+
+            checkAll() {
+                this.checked_all = !this.checked_all;
+
+                if (this.checked_all) {
+                    this.users.forEach(function(user) {
+                        this.user_ids.push(user.id);
+                    }.bind(this));
+                } else {
+                    this.user_ids = [];
                 }
             }
         }

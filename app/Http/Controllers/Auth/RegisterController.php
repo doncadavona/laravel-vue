@@ -56,7 +56,7 @@ class RegisterController extends Controller
             'first_name'           => ['required', 'string', 'max:255'],
             'last_name'            => ['required', 'string', 'max:255'],
             'address'              => ['nullable', 'string', 'min:1', 'max:255'],
-            'postcode'             => ['nullable', 'numeric', 'max:255'],
+            'postcode'             => ['nullable', 'numeric', 'digits_between:4,6'],
             'contact_phone_number' => ['nullable', 'digits:11', 'max:255'],
         ]);
     }

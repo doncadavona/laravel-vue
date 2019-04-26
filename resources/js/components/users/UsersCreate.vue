@@ -132,7 +132,7 @@
                         app.errors = error.response.data.errors;
                         console.log(error.response.data.message);
                         console.log(error.response.data.errors);
-                        // alert(error.response.data.message);
+                        // alert('Could not create user');
                     });
             }
         }

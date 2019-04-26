@@ -54,11 +54,20 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the full_address attribute
+     * Get the full_address attribute.
      * @return string
      */
     public function getFullAddressAttribute()
     {
         return $this->address . ' ' . $this->postcode;
+    }
+
+    /**
+     * Mutate the password attribute to its hash form.
+     * @param void
+     */
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
     }
 }

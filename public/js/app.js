@@ -2120,16 +2120,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
+    // Initialize bindable variables
     return {
       users: [],
       user_ids: [],
-      checked_all: false
+      checked_all: false,
+      show_batch_delete_button: false
     };
   },
   mounted: function mounted() {
-    var app = this;
+    var app = this; // Get users via HTTP
+
     axios.get('/api/users').then(function (resp) {
       app.users = resp.data;
     })["catch"](function (resp) {
@@ -2138,23 +2147,41 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   methods: {
-    deleteEntry: function deleteEntry(id, index) {
-      if (confirm("Are you sure to delete")) {
+    /**
+     * Delete selected user entries
+     */
+    deleteSelectedUsers: function deleteSelectedUsers() {
+      if (confirm("Delete " + this.user_ids.length + " item(s)?")) {
+        console.log("To delete: " + this.user_ids);
+      }
+    },
+
+    /**
+     * Delete a user entry.
+     */
+    deleteUser: function deleteUser(id, index) {
+      if (confirm("Are you sure to delete?")) {
         axios["delete"]('/api/users/' + id).then(function (resp) {
           this.users.splice(index, 1);
         })["catch"](function (resp) {
-          alert("Could not delete user");
+          alert("Could not delete user.");
         });
       }
     },
-    checkAll: function checkAll() {
+
+    /**
+     * Select all user entries.
+     */
+    selectAllUsers: function selectAllUsers() {
       this.checked_all = !this.checked_all;
 
       if (this.checked_all) {
+        // List all user ids
         this.users.forEach(function (user) {
           this.user_ids.push(user.id);
         }.bind(this));
       } else {
+        // Remove list of user ids
         this.user_ids = [];
       }
     }
@@ -38348,21 +38375,24 @@ var render = function() {
               attrs: { to: { name: "createUser" } }
             },
             [_vm._v("Create User")]
-          )
+          ),
+          _vm._v(" "),
+          _vm.user_ids.length
+            ? _c(
+                "button",
+                {
+                  staticClass: "btn btn-danger",
+                  on: { click: _vm.deleteSelectedUsers }
+                },
+                [_vm._v("Delete (" + _vm._s(_vm.user_ids.length) + ")")]
+              )
+            : _vm._e()
         ],
         1
       )
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "card-body table-responsive" }, [
-      _c("p", [_vm._v("\n            " + _vm._s(_vm.user_ids) + "\n        ")]),
-      _vm._v(" "),
-      _c("p", [
-        _vm._v(
-          "\n            checked_all: " + _vm._s(_vm.checked_all) + "\n        "
-        )
-      ]),
-      _vm._v(" "),
       _c("table", { staticClass: "table table-bordered table-hover" }, [
         _c("thead", [
           _c("tr", [
@@ -38383,7 +38413,7 @@ var render = function() {
                     : _vm.checked_all
                 },
                 on: {
-                  click: _vm.checkAll,
+                  click: _vm.selectAllUsers,
                   change: function($event) {
                     var $$a = _vm.checked_all,
                       $$el = $event.target,
@@ -38428,44 +38458,46 @@ var render = function() {
           _vm._l(_vm.users, function(user, index) {
             return _c("tr", [
               _c("td", [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.user_ids,
-                      expression: "user_ids"
-                    }
-                  ],
-                  attrs: { type: "checkbox" },
-                  domProps: {
-                    value: user.id,
-                    checked: Array.isArray(_vm.user_ids)
-                      ? _vm._i(_vm.user_ids, user.id) > -1
-                      : _vm.user_ids
-                  },
-                  on: {
-                    change: function($event) {
-                      var $$a = _vm.user_ids,
-                        $$el = $event.target,
-                        $$c = $$el.checked ? true : false
-                      if (Array.isArray($$a)) {
-                        var $$v = user.id,
-                          $$i = _vm._i($$a, $$v)
-                        if ($$el.checked) {
-                          $$i < 0 && (_vm.user_ids = $$a.concat([$$v]))
+                _c("label", { attrs: { for: _vm.user_ids[index] } }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.user_ids,
+                        expression: "user_ids"
+                      }
+                    ],
+                    attrs: { type: "checkbox" },
+                    domProps: {
+                      value: user.id,
+                      checked: Array.isArray(_vm.user_ids)
+                        ? _vm._i(_vm.user_ids, user.id) > -1
+                        : _vm.user_ids
+                    },
+                    on: {
+                      change: function($event) {
+                        var $$a = _vm.user_ids,
+                          $$el = $event.target,
+                          $$c = $$el.checked ? true : false
+                        if (Array.isArray($$a)) {
+                          var $$v = user.id,
+                            $$i = _vm._i($$a, $$v)
+                          if ($$el.checked) {
+                            $$i < 0 && (_vm.user_ids = $$a.concat([$$v]))
+                          } else {
+                            $$i > -1 &&
+                              (_vm.user_ids = $$a
+                                .slice(0, $$i)
+                                .concat($$a.slice($$i + 1)))
+                          }
                         } else {
-                          $$i > -1 &&
-                            (_vm.user_ids = $$a
-                              .slice(0, $$i)
-                              .concat($$a.slice($$i + 1)))
+                          _vm.user_ids = $$c
                         }
-                      } else {
-                        _vm.user_ids = $$c
                       }
                     }
-                  }
-                })
+                  })
+                ])
               ]),
               _vm._v(" "),
               _c("td", [_vm._v(_vm._s(user.username))]),
@@ -38507,7 +38539,7 @@ var render = function() {
                       attrs: { href: "#" },
                       on: {
                         click: function($event) {
-                          return _vm.deleteEntry(user.id, index)
+                          return _vm.deleteUser(user.id, index)
                         }
                       }
                     },

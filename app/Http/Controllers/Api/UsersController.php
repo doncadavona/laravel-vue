@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class UsersController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the user.
      *
      * @return \Illuminate\Http\Response
      */
@@ -21,7 +21,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created user in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -32,7 +32,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified user.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -43,7 +43,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified user in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -59,7 +59,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified user from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -68,6 +68,23 @@ class UsersController extends Controller
     {
         if (User::destroy($id)) {
             return 'The user has been deleted.';
+        } else {
+            return response()->json('Could not delete the user.', 500);
+        }
+    }
+    
+    /**
+     * Remove the specified multiple users from storage
+     * 
+     * @param  Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyMultiple(Request $request)
+    {
+        $users_deleted = User::whereIn('id', $request->ids)->delete();
+
+        if ($users_deleted) {
+            return  'Deleted ' . $users_deleted . ' user(s).';
         } else {
             return response()->json('Could not delete the user.', 500);
         }

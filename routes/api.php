@@ -18,5 +18,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['namespace' => 'Api', 'as' => 'api.'], function(){
+	Route::delete('users', 'UsersController@destroyMultiple')->name('users.destroy_multiple');
 	Route::resource('users', 'UsersController', ['except' => ['create', 'edit']]);
 });

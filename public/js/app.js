@@ -2126,6 +2126,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     // Initialize bindable variables
@@ -2137,22 +2138,50 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
-    var app = this; // Get users via HTTP
-
-    axios.get('/api/users').then(function (resp) {
-      app.users = resp.data;
-    })["catch"](function (resp) {
-      console.log(resp);
-      alert("Could not load users");
-    });
+    this.getUsers();
   },
   methods: {
+    /**
+     * Get users from the database via API
+     */
+    getUsers: function getUsers() {
+      var app = this;
+      axios.get('/api/users').then(function (response) {
+        app.users = response.data;
+      })["catch"](function (error) {
+        console.log(error);
+        alert("Could not load users");
+      });
+    },
+
     /**
      * Delete selected user entries
      */
     deleteSelectedUsers: function deleteSelectedUsers() {
-      if (confirm("Delete " + this.user_ids.length + " item(s)?")) {
-        console.log("To delete: " + this.user_ids);
+      var app = this;
+
+      if (confirm("Delete " + app.user_ids.length + " item(s)?")) {
+        console.log("To delete: " + app.user_ids); // Delete selected users from the database
+
+        axios["delete"]('/api/users', {
+          data: {
+            ids: app.user_ids
+          }
+        }).then(function (response) {
+          console.log('response.data: ' + response.data); // Remove deleted users locally
+
+          app.user_ids.forEach(function (user_id) {
+            app.users.splice(app.users.findIndex(function (user) {
+              return user.id == user_id;
+            }), 1);
+          }.bind(app)); // Finally, remove user selections
+
+          app.user_ids = [];
+          app.checked_all = false;
+        })["catch"](function (error) {
+          console.log(error);
+          alert("Could not delete users.");
+        });
       }
     },
 
@@ -38363,7 +38392,9 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "card" }, [
     _c("h5", { staticClass: "card-header" }, [
-      _vm._v("\n        Users\n        "),
+      _vm._v("\n        Users "),
+      _c("small", [_vm._v("(" + _vm._s(_vm.users.length) + ")")]),
+      _vm._v(" "),
       _c(
         "div",
         { staticClass: "float-right" },
@@ -38375,6 +38406,12 @@ var render = function() {
               attrs: { to: { name: "createUser" } }
             },
             [_vm._v("Create User")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            { staticClass: "btn btn-secondary", on: { click: _vm.getUsers } },
+            [_vm._v("Refresh")]
           ),
           _vm._v(" "),
           _vm.user_ids.length
@@ -38520,7 +38557,7 @@ var render = function() {
                   _c(
                     "router-link",
                     {
-                      staticClass: "btn btn-outline-secondary btn-sm",
+                      staticClass: "btn btn-outline-secondary btn-sm my-1",
                       attrs: {
                         to: { name: "editUser", params: { id: user.id } }
                       }
@@ -38535,7 +38572,7 @@ var render = function() {
                   _c(
                     "a",
                     {
-                      staticClass: "btn btn-outline-danger btn-sm",
+                      staticClass: "btn btn-outline-danger btn-sm my-1",
                       attrs: { href: "#" },
                       on: {
                         click: function($event) {

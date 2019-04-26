@@ -63,7 +63,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Mutate the password attribute to its hash form.
+     * Hash the password attribute prior to setting
      * @param void
      */
     public function setPasswordAttribute($value)

@@ -1,15 +1,16 @@
 <template>
     <div class="card">
         <h5 class="card-header">
-            Users
+            Users <small>({{ users.length }})</small>
             <div class="float-right">
                 <router-link :to="{name: 'createUser'}" class="btn btn-primary">Create User</router-link>
+                <button class="btn btn-secondary" @click="getUsers">Refresh</button>
                 <button v-if="user_ids.length" @click="deleteSelectedUsers" class="btn btn-danger">Delete ({{ user_ids.length }})</button>
             </div>
         </h5>
         <div class="card-body table-responsive">
             
-            <!-- Debugger -->
+            <!-- Show a nice little debugger for the multiple selection feature -->
             <!-- <p>
                 {{ user_ids }}
             </p>
@@ -46,10 +47,10 @@
                         <td>{{ user.contact_phone_number }}</td>
                         <td>{{ user.created_at }}</td>
                         <td>
-                            <router-link :to="{name: 'editUser', params: {id: user.id}}" class="btn btn-outline-secondary btn-sm">
+                            <router-link :to="{name: 'editUser', params: {id: user.id}}" class="btn btn-outline-secondary btn-sm my-1">
                                 Edit
                             </router-link>
-                            <a href="#" class="btn btn-outline-danger btn-sm" v-on:click="deleteUser(user.id, index)">
+                            <a href="#" class="btn btn-outline-danger btn-sm my-1" v-on:click="deleteUser(user.id, index)">
                                 Delete
                             </a>
                         </td>
@@ -72,26 +73,59 @@
             }
         },
         mounted() {
-            var app = this;
-
-            // Get users via HTTP
-            axios.get('/api/users')
-                .then(function (resp) {
-                    app.users = resp.data;
-                })
-                .catch(function (resp) {
-                    console.log(resp);
-                    alert("Could not load users");
-                });
+            this.getUsers();
         },
         methods: {
+
+            /**
+             * Get users from the database via API
+             */
+            getUsers() {
+                var app = this;
+
+                axios.get('/api/users')
+                    .then(function (response) {
+                        app.users = response.data;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        alert("Could not load users");
+                    });
+            },
 
             /**
              * Delete selected user entries
              */
             deleteSelectedUsers() {
-                if (confirm("Delete " + this.user_ids.length + " item(s)?")) {
-                    console.log("To delete: " + this.user_ids);
+                var app = this;
+
+                if (confirm("Delete " + app.user_ids.length + " item(s)?")) {
+                    console.log("To delete: " + app.user_ids);
+
+                    // Delete selected users from the database
+                    axios.delete('/api/users', {
+                            data: {
+                                ids: app.user_ids
+                            }
+                        })
+                        .then(function (response) {
+                            console.log('response.data: ' + response.data);
+
+                            // Remove deleted users locally
+                            app.user_ids.forEach(function(user_id){
+                                app.users.splice(app.users.findIndex(function(user){
+                                    return user.id == user_id
+                                }), 1);
+                            }.bind(app));
+
+                            // Finally, remove user selections
+                            app.user_ids = [];
+                            app.checked_all = false;
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                            alert("Could not delete users.");
+                        });
                 }
             },
 

@@ -23,8 +23,8 @@ $factory->define(User::class, function (Faker $faker) {
         'first_name'           => $faker->firstName,
         'last_name'            => $faker->lastName,
         'address'              => $faker->address,
-        'postcode'             => $faker->postcode,
-        'contact_phone_number' => $faker->phoneNumber,
+        'postcode'             => $faker->randomNumber(4),
+        'contact_phone_number' => '09' . $faker->randomNumber(9),
 
         'email_verified_at'    => now(),
         'password'             => bcrypt('secret'),

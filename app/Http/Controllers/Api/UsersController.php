@@ -29,6 +29,8 @@ class UsersController extends Controller
     public function store(StoreUserRequest $request)
     {
         $user = User::create($request->all());
+
+        return $user;
     }
 
     /**
@@ -82,11 +84,7 @@ class UsersController extends Controller
     public function destroyMultiple(Request $request)
     {
         $users_deleted = User::whereIn('id', $request->ids)->delete();
-
-        if ($users_deleted) {
-            return  'Deleted ' . $users_deleted . ' user(s).';
-        } else {
-            return response()->json('Could not delete the user.', 500);
-        }
+        
+        return  'Deleted ' . $users_deleted . ' user(s).';
     }
 }

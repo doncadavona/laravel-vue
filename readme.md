@@ -11,27 +11,27 @@ This is a basic CMS/CRUD app written in Laravel and Vue by [Don Cadavona](http:/
 
 Run the following:
 
-$ `composer install`
+* `composer install`
 
-$ `php artisan key:generate`
+* `php artisan key:generate`
 
-$ `cp .env.example .env` (*Then edit your new `.env`. Eg. `DB_DATABASE`*)
+* `cp .env.example .env` (*Then edit your new `.env`. Eg. `DB_DATABASE`*)
 
-$ `php artisan migrate --seed`
+* `php artisan migrate --seed`
 
-$ `npm install`
+* `npm install`
 
-$ `npm run dev`
+* `npm run dev`
 
 You may now serve the app, perhaps like so:
 
-$ `php artisan serve`
+* `php artisan serve`
 
 ## Test
 
 To run tests, run the following:
 
-$ `phpunit`
+* `phpunit`
 
 ## Developer
 

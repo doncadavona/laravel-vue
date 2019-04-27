@@ -15,6 +15,12 @@ $ `composer install`
 $ `php artisan key:generate`
 $ `cp .env.example .env` (*Then edit your new `.env`. Eg. `DB_DATABASE`*)
 $ `php artisan migrate --seed`
+$ `npm install`
+$ `npm run dev`
+
+You may now serve the app, perhaps like so:
+
+$ `php artisan serve`
 
 ## Test
 

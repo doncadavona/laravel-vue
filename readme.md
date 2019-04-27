@@ -12,10 +12,15 @@ This is a basic CMS/CRUD app written in Laravel and Vue by [Don Cadavona](http:/
 Run the following:
 
 $ `composer install`
+
 $ `php artisan key:generate`
+
 $ `cp .env.example .env` (*Then edit your new `.env`. Eg. `DB_DATABASE`*)
+
 $ `php artisan migrate --seed`
+
 $ `npm install`
+
 $ `npm run dev`
 
 You may now serve the app, perhaps like so:
